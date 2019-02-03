@@ -1,0 +1,12 @@
+#!/bin/bash -e
+
+echo "Entrypoint"
+
+WORKDIR_OWNER=$(ls -ld . | awk 'NR==1 {print $3}')
+
+tar --same-owner --skip-old-files -pxf $ARTIFACT_PATH/$MAGENTO_ARTIFACT_NAME -C $APP_PATH
+composer install -d $APP_PATH
+
+chown -R $WORKDIR_OWNER:www-data $APP_PATH
+
+exec "$@"
